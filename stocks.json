@@ -1,26 +1,18 @@
 {
-  "source": "synthetic",
   "underlying": "DEMO_ASSET",
-  "observation_date": "2026-08-10",
-  "spot": 100.0,
-  "surface": [
+  "observations": [
     {
-      "expiry": "2026-09-10",
-      "strike": 80,
-      "option_type": "call",
-      "implied_volatility": 0.31
-    },
-    {
-      "expiry": "2026-09-10",
-      "strike": 100,
-      "option_type": "call",
-      "implied_volatility": 0.22
-    },
-    {
-      "expiry": "2026-09-10",
-      "strike": 120,
-      "option_type": "call",
-      "implied_volatility": 0.27
+      "observation_date": "2026-08-01",
+      "spot": 100.32,
+      "surface": [
+        {
+          "expiry": "2026-08-07",
+          "days_to_expiry": 6,
+          "strike": 80,
+          "option_type": "call",
+          "implied_volatility": 0.2641
+        }
+      ]
     }
   ]
 }

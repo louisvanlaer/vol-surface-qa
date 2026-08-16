@@ -36,10 +36,12 @@ def main():
                 st.session_state.request_path = request_path
                 data = load_json_file(request_path)
                 underlying = data["underlying"]
-                spot = data["spot"]
-                surface = data["surface"]
-                
-                surface_df = pd.DataFrame(data["surface"])
+                spot = data["observations"][0]["spot"]
+                # surface = ["observations"]["surface"]
+                st.write(f"Underlying: {underlying}")
+                st.write(f"Spot: {spot}")               
+
+                surface_df = pd.DataFrame(data["observations"][0]["surface"])
 
         except AttributeError:
             st.warning("Please upload a valid JSON file.")
@@ -69,9 +71,6 @@ def main():
 
     st.dataframe(surface_df, use_container_width=True)
     
-    # st.write("Instrument :", underlying)
-    # st.write("Spot :", spot)
-    # st.write("Surface :", surface)
 
 
 
