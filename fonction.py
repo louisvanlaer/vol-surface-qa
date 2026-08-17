@@ -1,11 +1,29 @@
 import json
 import calendar
 from datetime import date
+import pandas as pd
 
-def load_json_file(file_path):     
-    with open(file_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
+def load_json_file(file_path):
+    try:     
+        with open(file_path, "r") as file:
+            return json.load(file)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"JSON invalid : {file_path}") from e
+
+def get_request(path,trade_date,instrument):
+    response = load_json_file(path)
+    rows = response["data"]
+    trade_date = sorted({
+        row["trading_date"]
+        for row in rows
+    })
+
+    instrument = sorted({
+        row["RIC"]
+        for row in rows
+    })
+
+    return trade_date, instrument
 
 def choose_date():
     annee, mois = 2026, 8
@@ -16,6 +34,8 @@ def choose_date():
     fin_mois = date(annee, mois, dernier_jour)
 
     return debut_mois, fin_mois
+
+
 
 
 

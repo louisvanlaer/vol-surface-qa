@@ -1,9 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
-
-
-
+from fonction import get_request
 from fonction import load_json_file
 from fonction import choose_date
 
@@ -33,15 +31,7 @@ def main():
 
             if uploaded_file is not None:
                 request_path = uploaded_file.name
-                st.session_state.request_path = request_path
-                data = load_json_file(request_path)
-                underlying = data["underlying"]
-                spot = data["observations"][0]["spot"]
-                # surface = ["observations"]["surface"]
-                st.write(f"Underlying: {underlying}")
-                st.write(f"Spot: {spot}")               
-
-                surface_df = pd.DataFrame(data["observations"][0]["surface"])
+                st.write(request_path)
 
         except AttributeError:
             st.warning("Please upload a valid JSON file.")
@@ -68,8 +58,15 @@ def main():
                 max_value=fin_aout,
                 on_change=_reset_run,
             )
+        st.button("run")
 
-    st.dataframe(surface_df, use_container_width=True)
+############################################################################################################################
+
+    if uploaded_file:
+        req1 = get_request(request_path,str(Date1),choose_instrument)
+        trade_dates, instruments = get_request(request_path,str(Date1),choose_instrument)
+        st.write(trade_dates)
+        st.write(instruments)
     
 
 
