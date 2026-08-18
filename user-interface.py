@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
-from fonction import get_request
-from fonction import load_json_file
 from fonction import choose_date
-
+from fonction import (
+    load_json,
+    get_available_dates,
+    get_available_instruments,
+    merge_volatility,
+)
 
 
 def _reset_run():
@@ -31,7 +34,6 @@ def main():
 
             if uploaded_file is not None:
                 request_path = uploaded_file.name
-                st.write(request_path)
 
         except AttributeError:
             st.warning("Please upload a valid JSON file.")
@@ -63,13 +65,47 @@ def main():
 ############################################################################################################################
 
     if uploaded_file:
-        req1 = get_request(request_path,str(Date1),choose_instrument)
-        trade_dates, instruments = get_request(request_path,str(Date1),choose_instrument)
-        st.write(trade_dates)
-        st.write(instruments)
-    
+        try:
+            df = load_json(uploaded_file)
+        except Exception as error:
+            st.error(f"Erreur lors du chargement du JSON : {error}")
+            st.stop()
 
+        instruments = get_available_instruments(df)
 
+        if not instruments:
+            st.error("Aucun instrument disponible dans le fichier.")
+            st.stop()
+
+        if choose_instrument not in instruments:
+            st.warning(
+                f"L'instrument '{choose_instrument}' n'est pas disponible. "
+                "Veuillez choisir un instrument valide."
+            )
+            st.stop()
+
+        available_dates = get_available_dates(df, choose_instrument)
+
+        if Date1 not in available_dates or Date2 not in available_dates:
+            st.warning(
+                "Les dates sélectionnées ne sont pas disponibles pour l'instrument choisi."
+            )
+            st.stop()
+
+        if Date1 >= Date2:
+            st.warning("La date de début doit être antérieure à la date de fin.")
+            st.stop()
+
+        merged_df = merge_volatility(df, choose_instrument, Date1, Date2)
+
+        if merged_df.empty:
+            st.warning("Aucune donnée disponible pour les paramètres sélectionnés.")
+            st.stop()
+
+        # Display the merged DataFrame
+        st.subheader("Merged Volatility Data")
+        st.dataframe(merged_df, height=400, width=800, use_container_width=True)
+        
 
 if __name__ == "__main__":
     main()
