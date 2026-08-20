@@ -153,6 +153,23 @@ def merge_volatility(df, instrument, date1, date2):
 
     return merged_df
 
+def count_alerts(df, tolerance):
+    """
+    compte le nombre de lignes dont la différence
+    de volatilité dépasse la tolérance.
+    """
+    return int((df["diff"] > tolerance).sum())
+
+def highlight_tolerance(row, tolerance):
+    """
+    Colore toute la ligne en rouge lorsque diff > tolerance.
+    """
+    if row["diff"] > tolerance:
+        return [
+            "background-color: #ff4b4b; color: white; font-weight: 600;"
+        ] * len(row)
+
+    return [""] * len(row)
 
 
 

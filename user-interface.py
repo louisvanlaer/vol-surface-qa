@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
-from fonction import choose_date
+from fonction import choose_date, count_alerts
 from fonction import (
     load_json,
     get_available_dates,
@@ -105,7 +105,19 @@ def main():
         # Display the merged DataFrame
         st.subheader("Merged Volatility Data")
         st.dataframe(merged_df, height=400, width=800, use_container_width=True)
-        
+
+        number_alerts = count_alerts(merged_df,tolerance)
+
+        if number_alerts > 0:
+            st.warning(
+            f"{number_alerts} lignes dépassent la tolérance de {tolerance:.2f}."
+            f"dépassent la tolérance de {tolerance:.2f}."
+        )
+        else:
+            st.success(
+                f"Aucune ligne ne dépasse la tolérance "
+                f"de {tolerance:.2f}."
+            )
 
 if __name__ == "__main__":
     main()
